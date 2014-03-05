@@ -7,6 +7,19 @@ import java.util.Queue;
 /* class to match a regular expression with a candidate string and idenfity if the candidate match the expression or not */
 public class RegularExpressionParser
 {
+    
+    public static void main (String[] args )
+    {
+        RegularExpressionParser rep = new RegularExpressionParser();
+        if (args.length != 2)
+        {
+            System.out.println(rep.match("abc*", "ababc"));
+        }
+        else{
+            System.out.println(rep.match(args[0], args[1]));
+        }
+    }
+    
     /* method to test if the given candidate string match the given regular expression */
     public boolean match (String expression, String candidate)
     {
@@ -14,7 +27,10 @@ public class RegularExpressionParser
         // 2 - empty regular expression matched with non empty string results in mismatch
         if ( expression == null ) return false;
         if ( expression.equals("") == true ) return false;
-        return matchInternal(tokenize(expression), candidate);
+        /*
+         * break the expression into token queue
+         */
+        return matchInternalWithMultipleCandidates(tokenize(expression), new String[]{candidate});
     }
 
     /* 
@@ -23,9 +39,8 @@ public class RegularExpressionParser
      */
     private boolean matchInternal(Queue<Token> tokens, String candidate)
     {
-        /*
-         * break the expression into token queue
-         */
+        
+        
         /*
          * as we match one token with the remaining characters in the candidate, it might result in multiple possible
          * remaining candidate strings, example - "a*bc" expression when matched with the candidate "aaabbbabc" will
@@ -38,12 +53,120 @@ public class RegularExpressionParser
          * tokens with all the possibilities of the remaining candidate, and if any one match then the match is successful
          * for this string
          */
+        
+        /*
+         * if no more tokens left
+         */
+        if ( tokens.isEmpty() == true )
+        {
+            /*
+             * if candidate has been fully consumed then successful parse
+             */
+            if ( candidate.equals("") == true )
+            {
+                return true;
+            }
+            /*
+             * else if the candidate still remains unconsumed by the expression then unsuccessful merge
+             */
+            else
+            {
+                return false;
+            }
+        }
+        
+        Token next = tokens.poll();
+        //match the first with the candidate, if matches then match the remaining
+        if ( next.match(candidate) == true)
+        {
+            return matchInternalWithMultipleCandidates(tokens, next.getRemainingExpressionsAfterMatch(candidate));
+        }
+        return false;
+    }
+    
+    private boolean matchInternalWithSingleCandidate(Queue<Token> tokens, String candidate)
+    {
+        
+        /*
+         * if no more tokens left
+         */
+        if ( tokens.isEmpty() == true )
+        {
+            /*
+             * if candidate has been fully consumed then successful parse
+             */
+            if ( candidate.equals("") == true )
+            {
+                return true;
+            }
+            /*
+             * else if the candidate still remains unconsumed by the expression then unsuccessful merge
+             */
+            else
+            {
+                return false;
+            }
+        }
+        
+        /*
+         * if the first token match the first character in the candidate then the match so far is successful,
+         * then call this method recursively with the remaining tokens and the new candidate
+         */
+        Token nextToken = tokens.poll();
+        if (nextToken.match(candidate) == true )
+        {
+            String[] candidates = nextToken.getRemainingExpressionsAfterMatch(candidate);
+            if ( candidates.length > 1){
+                return matchInternalWithMultipleCandidates(tokens, candidates);
+            }
+            else
+            {
+                return matchInternalWithSingleCandidate(tokens, candidates[0]);
+            }
+        }
         return false;
     }
     
     private boolean matchInternalWithMultipleCandidates(Queue<Token> tokens, String[] candidates)
     {
-        return false;
+        
+        /*
+         * if no more tokens left
+         */
+        if ( tokens.isEmpty() == true )
+        {
+            /*
+             * if candidate has been fully consumed then successful parse
+             */
+            if ( candidates.length == 1 && (candidates[0].equals("") == true))
+            {
+                return true;
+            }
+            /*
+             * else if the candidate still remains unconsumed by the expression then unsuccessful merge
+             */
+            else
+            {
+                return false;
+            }
+        }
+        /*
+         * if the tokens are not empty then try to match
+         */
+        boolean result = false;
+        Token token = tokens.poll();
+        // get the result of matching the first token with all the candidates
+        for ( int i = 0; i < candidates.length; i++ )
+        {
+            //if the token match with a candidate, then try to match the remaining tokens with the remaining candidates
+            //generated by this token
+            if ( token.match(candidates[i]) == true )
+            {
+                result = result || matchInternalWithMultipleCandidates(new LinkedList<Token>(tokens), token.getRemainingExpressionsAfterMatch(candidates[i]));
+            }
+//            result = result || matchInternalWithSingleCandidate(tokens., candidate)
+        }
+        return result;
     }
     
     private Queue<Token> tokenize(String expression)
@@ -100,7 +223,9 @@ public class RegularExpressionParser
     
     private abstract class Token
     {
-        public abstract boolean match(String character);
+        public abstract boolean match(String candidate);
+
+        public abstract String[] getRemainingExpressionsAfterMatch(String expression);
     }
     private class Asterix extends Token
     {
@@ -109,13 +234,36 @@ public class RegularExpressionParser
             //no need to do emptyness check on the param, this will match anything
             return true;
         }
+        
+        @Override
+        public String[] getRemainingExpressionsAfterMatch(String expression)
+        {
+            if ( expression.equals("") == true )
+            {
+                return new String[0];
+            }
+
+            StringBuffer temp = new StringBuffer(expression);
+            String[] toReturn = new String[temp.length() + 1];
+            for ( int i = 0; i <= expression.length(); i++ )
+            {
+                toReturn[i] = temp.substring(i);
+            }
+            return toReturn;
+        }
     }
     
     private class Period extends Token
     {
-        public boolean match(String character)
+        public boolean match(String candidate)
         {
-            //dot will match any character
+            //match fail if candidate is empty
+            if ( candidate == null || (candidate.equals("") == true) )
+            {
+                return false;
+            }
+            String character = candidate.substring(0,1);
+            //dot will match any non empty and non-null character
             if ( character != null )
             {
                 if ( character.equals("") == false )
@@ -124,6 +272,18 @@ public class RegularExpressionParser
                 }
             }
             return false;
+        }
+        
+        @Override
+        public String[] getRemainingExpressionsAfterMatch(String expression)
+        {
+            if ( expression.equals("") == true )
+            {
+                return new String[0];
+            }
+            else {
+                return new String[]{expression.substring(1)};
+            }
         }
     }
     
@@ -135,9 +295,27 @@ public class RegularExpressionParser
             this.character = character;
         }
         
-        public boolean match(String character)
+        public boolean match(String candidate)
         {
+            //match fail if candidate is empty
+            if ( candidate == null || (candidate.equals("") == true) )
+            {
+                return false;
+            }
+            String character = candidate.substring(0,1);
             return this.character.equals(character);
+        }
+        
+        @Override
+        public String[] getRemainingExpressionsAfterMatch(String expression)
+        {
+            if ( expression.equals("") == true )
+            {
+                return new String[0];
+            }
+            else {
+                return new String[]{expression.substring(1)};
+            }
         }
     }
 }
