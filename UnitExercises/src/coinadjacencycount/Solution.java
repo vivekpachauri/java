@@ -7,6 +7,11 @@ public class Solution {
 		Solution s = new Solution();
 		System.out.println(s.solution(new int[]{1,1,1}));
 	}
+	
+	/*
+	 * need to find and fix the bug in the following code. The instruction say that I should have to fix
+	 * at the most 3 lines to fix the bug
+	 */
 	int solution(int[] A ) 
 	{
         int n = A.length;
