@@ -5,7 +5,7 @@ public class Solution {
 	public static void main(String[] args )
 	{
 		Solution s = new Solution();
-		System.out.println(s.solution(new int[]{1,1,1}));
+		System.out.println(s.solution(new int[]{0,1,0}));
 	}
 	
 	/*
@@ -20,7 +20,7 @@ public class Solution {
             if (A[i] == A[i + 1])
                 result = result + 1;
         }
-        int r = 0;
+        int r = -1;
         for (int i = 0; i < n; i++) {
             int count = 0;
             if (i > 0) {
