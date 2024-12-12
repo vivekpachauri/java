@@ -4,8 +4,8 @@ public class Driver {
 
     public static void main(String[] args) {
         Driver d = new Driver();
-        int[] marray = new int[] {1,2,5,8, 0, 0};
-        d.merge(marray, 4, new int[] {3, 4}, 2);
+        int[] marray = new int[] {0};
+        d.merge(marray, 0, new int[] {1}, 1);
         System.out.println("result");
         for (int i : marray) {
             System.out.print(i + " ");
@@ -15,11 +15,17 @@ public class Driver {
 
     public void merge(int[] nums1, int m, int[] nums2, int n) {
         int index = 0;
-        int indexToReplace = n;
         int indexAtNum1 = 0;
         int indexAtNum2 = 0;
-        while (index < m+n ) {
+        while (index < m+n && (indexAtNum2 < n)) {
             System.out.println("beginning of full index loop for index " + index);
+
+            //need to corner cases, first to check if all the elements in the first array has been processed
+            //need to rethink if this corner case is needed
+            //second to check if all the elements in the second array has been processed
+            // if (indexAtNum2 == n ) {
+
+            // }
             //if the element at indexAtNum1 is zero then we simply copy the value from num2 array at this location
             if (nums1[indexAtNum1] == 0) {
                 System.out.println("value in nums1 is zero so somply overwriting the value from nums2");
