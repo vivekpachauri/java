@@ -4,8 +4,15 @@ public class Driver {
 
     public static void main(String[] args) {
         Driver d = new Driver();
-        int[] marray = new int[] {0};
-        d.merge(marray, 0, new int[] {1}, 1);
+        // int[] marray = new int[] {1,2,3,0,0,0};//{1,2,8,0,0,0};
+        // int mSize = 3;
+        // int[] narray = new int[] {2,5,6};
+        // int nSize = 3;
+        int[] marray = new int[] {-1,0,0,3,3,3,0,0,0};//{1,2,8,0,0,0};
+        int mSize = 6;
+        int[] narray = new int[] {1,2,2};
+        int nSize = 3;
+        d.merge(marray, mSize, narray, nSize);
         System.out.println("result");
         for (int i : marray) {
             System.out.print(i + " ");
@@ -17,6 +24,7 @@ public class Driver {
         int index = 0;
         int indexAtNum1 = 0;
         int indexAtNum2 = 0;
+        int elementsConsumedFromFirstArray = 0;
         while (index < m+n && (indexAtNum2 < n)) {
             System.out.println("beginning of full index loop for index " + index);
 
@@ -27,8 +35,9 @@ public class Driver {
 
             // }
             //if the element at indexAtNum1 is zero then we simply copy the value from num2 array at this location
-            if (nums1[indexAtNum1] == 0) {
-                System.out.println("value in nums1 is zero so somply overwriting the value from nums2");
+            //if (nums1[indexAtNum1] == 0) {
+                if (elementsConsumedFromFirstArray == m) {
+                System.out.println("value in nums1 is zero (update all values in first array are consumed) so somply overwriting the value from nums2");
                 nums1[indexAtNum1] = nums2[indexAtNum2];
                 indexAtNum1++;
                 indexAtNum2++;
@@ -44,9 +53,11 @@ public class Driver {
             else if (nums1[indexAtNum1] < nums2[indexAtNum2]) {
                 System.out.println("value in nums1 is smaller");
                 indexAtNum1++;
+                elementsConsumedFromFirstArray++;
             } else if (nums1[indexAtNum1] == nums2[indexAtNum2]) {
                 System.out.println("value in nums1 is equal");
                 indexAtNum1++;
+                elementsConsumedFromFirstArray++;
 
             } else {
                 System.out.println("value in nums2 is smaller");
@@ -72,11 +83,15 @@ public class Driver {
                 //     nums1[startingIndexToShift+2] = tmp;
 
                 // }
-                for (int i = indexAtNum1; i < m-1+indexAtNum2; i++ ) {
-                    int tmp = nums1[i+1];
-                    nums1[i+1] = nums1[i];
-                    nums1[i+2] = tmp;
+                // for (int i = indexAtNum1; i < m+indexAtNum2; i++ ) {
+                //     int tmp = nums1[i+1];
+                //     nums1[i+1] = nums1[i];
+                //     //nums1[i+2] = tmp;
+                // }
+                for ( int i = m+indexAtNum2; i > indexAtNum1; i--) {
+                    nums1[i] = nums1[i-1];
                 }
+
                 System.out.println("array after shifting");
                 for (int i : nums1) {
                     System.out.print(i + " ");
@@ -93,8 +108,8 @@ public class Driver {
                 indexAtNum2++;
 
             }
-            index++;
             System.out.println("end of full index loop for index " + index);
+            index++;
         }
     }
 
