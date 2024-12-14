@@ -1,18 +1,17 @@
 package com.vivek.rotate_array;
 
 import java.util.Arrays;
-import java.util.function.IntFunction;
 
 public class Driver {
 
     public void rotate(int[] nums, int k) {
-        // if ( nums.length < k ) {
-        //     rotateInPlace(nums, k);
-        // }
-        // else {
-        //     rotateWithCopy(nums, k);
-        // }
-        rotateWithCopy(nums, k);
+        if ( nums.length < k ) {
+            rotateInPlace(nums, k);
+        }
+        else {
+            rotateWithCopy(nums, k);
+        }
+        // rotateWithCopy(nums, k);
     }
 
     private void rotateInPlace(int[] nums, int k) {
