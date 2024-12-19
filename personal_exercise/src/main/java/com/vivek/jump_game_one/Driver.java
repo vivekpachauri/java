@@ -44,11 +44,13 @@ value at index 0 will determine how many recursive calls to be made
  */
 
  public boolean canJump(int[] nums) {
-    return canJumpRec(nums, false);
+    //return canJumpRec(nums, false);
+    return canJumpIterative(nums);
  }
 
  private boolean canJumpRec(int[] nums, boolean targetReached) {
-    if ( nums.length == 1 ) return true;
+    if (targetReached ) return true;
+    else if ( nums.length == 1 ) return true;
     else if ( nums[0] >= nums.length - 1 ) return true;
     else {
         boolean[] results = new boolean[nums[0]];
@@ -61,6 +63,15 @@ value at index 0 will determine how many recursive calls to be made
         }
         return retVal;
     }
+ }
+
+ private boolean canJumpIterative(int[] nums) {
+    int maxReach = 0;
+    for ( int i = 0; i < nums.length; i++ ) {
+        if ( i > maxReach ) return false;
+        maxReach = Math.max(maxReach, i + nums[i]);
+    }
+    return maxReach >= nums.length - 1;
  }
 
 public static void main(String[] args) {
