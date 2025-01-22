@@ -37,7 +37,7 @@ class Solution {
      * s consists of only English lowercase letters.
      */
     public int partitionString(String s) {
-        return partitionStringRec(s);
+        return partitionStringGreedy(s);
     }
 
     private int partitionStringGreedy(String s) {
