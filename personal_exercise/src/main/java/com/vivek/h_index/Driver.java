@@ -1,5 +1,8 @@
 package com.vivek.h_index;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MaximizeAction;
 
 /*
@@ -29,7 +32,7 @@ n == citations.length
  */
 public class Driver {
     public int hIndex(int[] citations) {
-        return hIndexIterONSquared(citations);
+        return hIndexIterOnArray(citations);
     }
 
     private int hIndexIterONSquared(int[] citations) {
@@ -54,28 +57,198 @@ public class Driver {
         return maxHIndex;
     }
 
-    private int hIndexIterOn(int[] citations) {
+    private int hIndexIterOnMap(int[] citations) {
         //example 3,0,5,1,6
         /*
-         * loop from 0 to length
-         * before the loop being upper bound is length and lower bound is 0
-         * read the value in the first array element
-         * the upper bound gets reduced by len - (number of elements read) = 5 - 1 = 4
-         * lower bound is the value of array element = 3
+         * create a map to keep track of values and the number of times they have been seen
+         * add the first value to the map if the number of elements left is equal or less
+         * than the value
+         * input 3, 0, 5, 1, 6
+         * {} 
+         * first iter
+         * 3, 0, 5, 1, 6
+         * |
+         * {
+         *   "3" -> 1
+         * }
          * 
-         * next loop the 
+         * second iter
+         * if an element exist in the map then ignore 0
+         * 3, 0, 5, 1, 6
+         *    |
+         * {
+         *   "3" -> 1
+         * }
+         * 
+         * third iter
+         * 3, 0, 5, 1, 6
+         *       |
+         * {
+         *   "3" -> 2,
+         *   "5" -> 1
+         * }
+         * 
+         * fourth iter
+         * 3, 0, 5, 1, 6
+         *          |
+         * {
+         *   "1" -> 1,
+         *   "3" -> 2,
+         *   "5" -> 1
+         * }
+         * 
+         * fifth iter
+         * 3, 0, 5, 1, 6
+         *             |
+         * {
+         *   "1" -> 2,
+         *   "3" -> 3,
+         *   "5" -> 2,
+         *   "6" -> 1
+         * }
+         * 
+         * 
+         * alternate input 1, 0, 5, 3, 6
+         * {
+         *   1 -> 4,
+         *   2 -> 3,
+         *   3 -> 3,
+         *   4 -> 2,
+         *   5 -> 2,
+         *   6 -> 1
+         * }
          * 
          */
-        return 0;
+        
+        Map<Integer, Integer> seenMap = new HashMap<>();
+        for ( int i = 0; i < citations.length; i++ ) {
+            //insert 1 through citations[i] entries in the seen map
+            for ( int j = 1; j <= citations[i]; j++ ) {
+                seenMap.put(j, seenMap.getOrDefault(j, 0) + 1);
+            }
+        }
+        
+        int highestK = 0;
+        int leastDiff = Integer.MAX_VALUE;
+        for ( Map.Entry<Integer, Integer> entry : seenMap.entrySet() ) {
+            System.out.println("key: " + entry.getKey() + " value: " + entry.getValue());
+            int diff = entry.getValue() - entry.getKey();
+            if (diff >= 0) {
+                if (diff < leastDiff) {
+                    leastDiff = diff;
+                    highestK = entry.getKey();
+                }
+            }
+        }
+
+        //now iterate over the map entries in the descending order of keys and find the one
+        //where the difference between key and value is least
+        return highestK;
+    }
+
+    private int hIndexIterOnArray(int[] citations) {
+        //example 3,0,5,1,6
+        /*
+         * create a map to keep track of values and the number of times they have been seen
+         * add the first value to the map if the number of elements left is equal or less
+         * than the value
+         * input 3, 0, 5, 1, 6
+         * {} 
+         * first iter
+         * 3, 0, 5, 1, 6
+         * |
+         * {
+         *   "3" -> 1
+         * }
+         * 
+         * second iter
+         * if an element exist in the map then ignore 0
+         * 3, 0, 5, 1, 6
+         *    |
+         * {
+         *   "3" -> 1
+         * }
+         * 
+         * third iter
+         * 3, 0, 5, 1, 6
+         *       |
+         * {
+         *   "3" -> 2,
+         *   "5" -> 1
+         * }
+         * 
+         * fourth iter
+         * 3, 0, 5, 1, 6
+         *          |
+         * {
+         *   "1" -> 1,
+         *   "3" -> 2,
+         *   "5" -> 1
+         * }
+         * 
+         * fifth iter
+         * 3, 0, 5, 1, 6
+         *             |
+         * {
+         *   "1" -> 2,
+         *   "3" -> 3,
+         *   "5" -> 2,
+         *   "6" -> 1
+         * }
+         * 
+         * 
+         * alternate input 1, 0, 5, 3, 6
+         * {
+         *   1 -> 4,
+         *   2 -> 3,
+         *   3 -> 3,
+         *   4 -> 2,
+         *   5 -> 2,
+         *   6 -> 1
+         * }
+         * 
+         */
+        int maxValue = 0;
+        for ( int i = 0; i < citations.length; i++ ) {
+            if (citations[i] > maxValue )
+                maxValue = citations[i];
+        }
+        int[] seenArray = new int[maxValue];
+        for (int i = 0; i < maxValue; i++) {
+            seenArray[i] = 0;
+        }
+        for ( int i = 0; i < citations.length; i++ ) {
+            //insert 1 through citations[i] entries in the seen map
+            for ( int j = 1; j <= citations[i]; j++ ) {
+                seenArray[j-1] = seenArray[j-1] + 1;
+            }
+        }
+        int highestKArray = 0;
+        int leastDiffArray = Integer.MAX_VALUE;
+        for (int i = 0; i < seenArray.length; i++ ) {
+            System.out.println("array key: " + i + " array value: " + seenArray[i]);
+            int diff = seenArray[i] - (i+1);
+            if ( diff >= 0 ) {
+                if ( diff < leastDiffArray) {
+                    leastDiffArray = diff;
+                    highestKArray = i+1;
+                }
+            }
+        }
+
+        //now iterate over the array entries in the descending order of keys and find the one
+        //where the 
+        return highestKArray;
     }
 
     public static void main(String[] args) {
         Driver driver = new Driver();
         int[] citations = {
         //{11,13};
-            3,0,6,1,5
-            //3,0,1,6,6,6,6,6,6,6
+            //3,0,6,1,5
+            3,0,1,6,6,6,6,6,6,6
             //3,0
+            //0
     };
         System.out.println(driver.hIndex(citations));
     }
