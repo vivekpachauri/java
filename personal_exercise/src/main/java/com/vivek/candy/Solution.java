@@ -87,7 +87,7 @@ class Solution {
                 }
             }
 
-            // if last item then check only the left neighbor
+            // if last item then check only the left neighbor 
             else if (i == (ratings.length - 1)) {
                 if (ratings[i] > ratings[i - 1] && candies[i] <= candies[i - 1]) {
                     candies[i] += 1;// candies[i-1];
@@ -311,7 +311,7 @@ class Solution {
 
     private void testRatings4() {
         int[] ratings4 = { 1, 2, 87, 88, 87, 2, 1 };
-        System.out.println("####Minimum candies needed for ratings3: " + candy(ratings4)); // Output: 13
+        System.out.println("####Minimum candies needed for ratings4: " + candy(ratings4)); // Output: 13
     }
 
     private void testRatings5() {
@@ -319,6 +319,6 @@ class Solution {
         for ( int i = 1; i <= 20000; i++ ) {
             ratings5[i] = i;
         }
-        System.out.println("####Minimum candies needed for ratings3: " + candy(ratings5)); // Output: 7
+        System.out.println("####Minimum candies needed for ratings5: " + candy(ratings5)); // Output: 200030001
     }
 }
