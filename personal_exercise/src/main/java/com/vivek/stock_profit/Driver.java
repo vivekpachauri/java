@@ -60,7 +60,18 @@ public class Driver {
       */
 
     public int maxProfit(int[] prices) {
-        if (prices.length == 1 ) { 
+        int[] profits = new int[prices.length];
+        profits[0] = 0;
+        for ( int i = 1; i < prices.length; i++ ) {
+            profits[i] = profits[i-1] + Math.max((prices[i] - prices[i-1]), 0);
+        }
+        for ( int i : profits ) {
+            System.out.print(i + ",");
+        }
+        return profits[prices.length-1];
+    }
+    public int maxProfitInefficient(int[] prices) {
+        if (prices.length == 1 ) {
             return 0;
         }
         int[][] priceDifference = new int[prices.length][prices.length];
@@ -157,14 +168,24 @@ public class Driver {
 //1,6,5
 //5,1,6
         Driver driver = new Driver();
-        int[] prices = 
-        //new int[] {1, 6, 5};
-        new int[] { 7,2,1,6,5,8 };
-        System.out.print("[ ");
-        for ( int i : prices ) {
-            System.out.print(i + ",");
-        }
-        System.out.println(" ]");
-        System.out.println("total profit = " + driver.maxProfit(prices));
+        int[] test1 = {7, 1, 5, 3, 6, 4};
+        int[] test2 = {1, 2, 3, 4, 5};
+        int[] test3 = {7, 6, 4, 3, 1};
+        int[] test4 = {1, 6, 5};
+        int[] test5 = {7, 2, 1, 6, 5, 8};
+
+        System.out.println("Test 1: " + driver.maxProfit(test1)); // Expected output: 7
+        System.out.println("Test 2: " + driver.maxProfit(test2)); // Expected output: 4
+        System.out.println("Test 3: " + driver.maxProfit(test3)); // Expected output: 0
+        System.out.println("Test 4: " + driver.maxProfit(test4)); // Expected output: 5
+        System.out.println("Test 5: " + driver.maxProfit(test5)); // Expected output: 10
+        // int[] prices = 
+        // new int[] { 7,2,1,6,5,8 };
+        // System.out.print("[ ");
+        // for ( int i : prices ) {
+        //     System.out.print(i + ",");
+        // }
+        // System.out.println(" ]");
+        // System.out.println("total profit = " + driver.maxProfit(prices));
     }
 }
