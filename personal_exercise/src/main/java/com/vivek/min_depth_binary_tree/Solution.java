@@ -14,7 +14,7 @@ public class Solution {
             int maxDepthRight = maxDepthRec(root.right, currentDepth+1);
             return Math.min(maxDepthLeft, maxDepthRight);
         }
-        else if ( root.left == null && root.right != nul ) {
+        else if ( root.left == null && root.right != null ) {
             return maxDepthRec(root.right, currentDepth+1);
         }
         else {
