@@ -14,21 +14,24 @@ public class Solution {
         int[] sortedSolution = twoSumInnser(sortedNums, target);
         int firstIndex = -1;
         int secondIndex = -1;
-        for ( int i = 0; i < sortedNums.length && firstIndex < 0; i++ ) {
+        for ( int i = 0; ((i < sortedNums.length) && ((firstIndex < 0) || (secondIndex < 0))); i++ ) {
             //sortedSolution[i] = indexMap.get(nums[sortedSolution[i]]);
             if ( nums[i] == sortedNums[sortedSolution[0]] ) {
                 firstIndex = i;
-                break;
+            }
+            if ( nums[i] == sortedNums[sortedSolution[1]] ) {
+                secondIndex = i;
             }
         }
-
+/*
         for ( int i = sortedNums.length - 1; i >= 0 && secondIndex < 0; i-- ) {
             //sortedSolution[i] = indexMap.get(nums[sortedSolution[i]]);
             if ( nums[i] == sortedNums[sortedSolution[1]] ) {
                 secondIndex = i;
                 break;
             }
-        }
+        } 
+*/
         sortedSolution[0] = firstIndex;
         sortedSolution[1] = secondIndex;
         return sortedSolution;
