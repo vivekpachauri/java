@@ -15,55 +15,10 @@ public class Solution {
                 return false;
             }
             else {
-
                 return isBalanced(root.left) && isBalanced(root.right);
             }
         }
-        /*
-         * 
-         */
     }
-
-    public boolean isBalancedddd(TreeNode node) {
-        //if current node is null then return true
-        if (node == null ) {
-            return true;
-        }
-        else if ( node.left == null && node.right == null ) {
-            return true;
-        }
-        else {
-            if ( node.left == null ) {
-                if (isParent(node.right) ) {
-                    return false;
-                }
-            }
-            else if ( node.right == null ) {
-                if ( isParent(node.left) ) {
-                    return false;
-                }
-            }
-            return isBalanced(node.left) && isBalanced(node.right);
-        }
-        //if left and right child are empty then return true
-
-    }
-    /*
-     * at every level the difference in the left and right height should not be more than 1
-     * therefore at every node if one child is null then the other cannot be a parent
-     */
-
-     private boolean isParent(TreeNode node) {
-        if ( node == null ) {
-            return false;
-        }
-        if ( node.left != null || node.right != null ) {
-            return true;
-        }
-        else {
-            return false;
-        }
-     }
 
     private int depth(TreeNode node, int depth) {
         if ( node == null ) {
@@ -125,13 +80,3 @@ public class Solution {
         System.out.println("Test case 5 (Balanced from given values): " + solution.isBalanced(testCase5Root)); // Expected: true
     }
 }
-
-/*
-
-                         1
-        2                               2
-    3       nil                     null    3
-4                                               4 
-                                            null
-
-                                         */
