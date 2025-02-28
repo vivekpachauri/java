@@ -2,7 +2,9 @@ package com.vivek.k_pairs_with_smallest_sums;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Queue;
 
 import javax.swing.Painter;
 
@@ -44,115 +46,106 @@ public class Solution {
 
     public List<List<Integer>> kSmallestPairs(int[] nums1, int[] nums2, int k) {
         List<List<Integer>> result = new ArrayList<List<Integer>>();
-        // PriorityQueue<Integer> firstQueue = new PriorityQueue<>();
-        // PriorityQueue<Integer> secondQueue = new PriorityQueue<>();
-        // for ( int i = 0; i < nums1.length; i++ ) {
-        //     firstQueue.add(nums1[i]);
-        // }
-
-        // for ( int i = 0; i < nums2.length; i++ ) {
-        //     secondQueue.add(nums2[i]);
-        // }
-
-        // for ( int i = 0; i < k; i++ ) {
-        //     int firstNum = firstQueue.poll();
-        //     int secondNum = secondQueue.poll();
-        //     //peek the next two smallest numers from both
-        //     //add it to the result
-        //     List<Integer> pair = new ArrayList<>(2);
-        //     pair.add(firstNum);
-        //     pair.add(secondNum);
-        //     result.add(pair);
-        //     //remove from whichever queue there is larger number in the next spot
-        //     int nextFirst = firstQueue.peek();
-        //     int nextSecond = secondQueue.peek();
-        //     //if the sum of the next two is same then delete the bigger one
-        //     if (firstNum + nextSecond == secondNum + nextFirst ) {
-        //         if ( firstNum > secondNum ) {
-        //             secondQueue.add(secondNum);
-        //         }
-        //         else {
-        //             firstQueue.add(firstNum);
-        //         }
-        //     }
-        //     else if ( firstNum + nextSecond < secondNum + nextFirst ) {
-        //         firstQueue.add(firstNum);
-        //     }
-        //     else {
-        //         secondQueue.add(secondNum);
-        //     }
-
-        // }
-
-        //the two arrays are already sorted so we can use the for loop to get the smallest to largest values
-
-        int pairsGenerated = 0;
-        int nums1Index = nums1.length - 1;
-        int nums2Index = nums2.length - 1;
-        while ( pairsGenerated < k ) {
-            //use two pointers in both lists
-            int nums1Last = nums1[nums1Index];
-            int nums1SecondLast = nums1[nums2Index-1];
-            
-            int nums2Last = nums2[nums2Index];
-            int nums2SecondLast = nums2[nums2Index-1];
-
-            //add the smallest pair to the list first
-            List<Integer> pair = new ArrayList<>(2);
-            pair.add(nums1Last);
-            pair.add(nums2Last);
-            result.add(pair);
-            pairsGenerated++;
-            if ( pairsGenerated >= k ) {
-                break;
+        PriorityQueue<QueueEntry> queue = new PriorityQueue<>();
+        for ( int i = 0; i < nums1.length; i++ ) {
+            for ( int j = 0; j < nums2.length; j++ ) {
+                QueueEntry entry = new QueueEntry(nums1[i] + nums2[j], nums1[i], nums2[j]);
+                queue.add(entry);
             }
-            //then add the smaller of the two cross pair first
-            if ( nums1Last + nums2SecondLast < nums2Last + nums1SecondLast) {
-                List<Integer> firstCrossPair = new ArrayList<>(2);
-                firstCrossPair.add(nums1Last);
-                firstCrossPair.add(nums2SecondLast);
-                result.add(firstCrossPair);
-                pairsGenerated++;
-                if ( pairsGenerated >= k ) {
-                    break;
-                }
+        }
+        for ( int i = 0; i < k; i++ ) {
+            List<Integer> listEntry = new ArrayList<>(2);
+            QueueEntry entry = queue.poll();
+            listEntry.add(entry.pair.one);
+            listEntry.add(entry.pair.two);
+            result.add(listEntry);
 
-                List<Integer> secondCrossPair = new ArrayList<>(2);
-                secondCrossPair.add(nums1SecondLast);
-                secondCrossPair.add(nums2Last);
-                result.add(secondCrossPair);
-                pairsGenerated++;
-                if ( pairsGenerated >= k ) {
-                    break;
-                }
-            }
-            else {
-                List<Integer> firstCrossPair = new ArrayList<>(2);
-                firstCrossPair.add(nums1SecondLast);
-                firstCrossPair.add(nums2Last);
-                result.add(firstCrossPair);
-                pairsGenerated++;
-                if ( pairsGenerated >= k ) {
-                    break;
-                }
-
-                List<Integer> secondCrossPair = new ArrayList<>(2);
-                secondCrossPair.add(nums1Last);
-                secondCrossPair.add(nums2SecondLast);
-                result.add(secondCrossPair);
-                pairsGenerated++;
-                if ( pairsGenerated >= k ) {
-                    break;
-                }
-            }
-            //now add the bigger of the two cross pair
-
-            //update the index
-            nums1Index--;
-            nums2Index--;
-            
         }
         return result;
+    }
+
+    private static class QueueEntry implements Comparable<QueueEntry>{
+        public Integer total;
+        public Pair pair;
+        public QueueEntry(int sum, int value1, int value2 ) {
+            Pair pair = new Pair(value1, value2);
+            this.total = sum;
+            this.pair = pair;
+        }
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + total;
+            result = prime * result + ((pair == null) ? 0 : pair.hashCode());
+            return result;
+        }
+        @Override
+        public String toString() {
+            return "QueueEntry [total=" + total + ", pair=" + pair + "]";
+        }
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            QueueEntry other = (QueueEntry) obj;
+            if (total != other.total)
+                return false;
+            if (pair == null) {
+                if (other.pair != null)
+                    return false;
+            } else if (!pair.equals(other.pair))
+                return false;
+            return true;
+        }
+        @Override
+        public int compareTo(QueueEntry o) {
+            // TODO Auto-generated method stub
+            QueueEntry entry = (QueueEntry)o;
+            return this.total.compareTo(entry.total);
+        }
+
+        
+    }
+
+    private static class Pair {
+        public Integer one;
+        @Override
+        public String toString() {
+            return "Pair [one=" + one + ", two=" + two + "]";
+        }
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + one;
+            result = prime * result + two;
+            return result;
+        }
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            Pair other = (Pair) obj;
+            if (one != other.one)
+                return false;
+            if (two != other.two)
+                return false;
+            return true;
+        }
+        public Integer two;
+        public Pair(int one, int two) {
+            this.one = one;
+            this.two = two;
+        }
     }
 
     public static void main(String[] args) {
