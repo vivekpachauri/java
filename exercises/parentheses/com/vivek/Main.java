@@ -10,6 +10,37 @@ public class Main {
         System.out.println(main.isValid(")"));
     }
     
+    public boolean isValid2(String s) {
+        int[] stack = new int[s.length()];
+        int index = 0;
+        for ( char c : s.toCharArray() ) {
+            if ( c == '(' ) {
+                stack[index] = 1;
+            }
+            else if ( c == ')' ) {
+                stack[index] = -1;
+            }
+            else if ( c == '[' ) {
+                stack[index] = 2;
+            }
+            else if ( c == ']' ) {
+                stack[index] = -2;
+            }
+            else if ( c == '{' ) {
+                stack[index] = 3;
+            }
+            else if ( c == '}' ) {
+                stack[index] = -3;
+            }
+            index++;
+        }
+        int sum = 0;
+        for ( int i : stack ) {
+
+        }
+        return false;
+    }
+
     public boolean isValid(String s) {
         if (s.length() > 10000) throw new IllegalArgumentException();
         /*

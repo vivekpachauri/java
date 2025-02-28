@@ -40,7 +40,7 @@ class Solution {
         ListNode node1 = new ListNode(1, node2);
 
         Solution s = new Solution();
-        ListNode reversedHead = s.reverse(node1);
+        ListNode reversedHead = s.reverseAgain(node1);
 
         while (reversedHead != null) {
             System.out.print(reversedHead.val + " ");
