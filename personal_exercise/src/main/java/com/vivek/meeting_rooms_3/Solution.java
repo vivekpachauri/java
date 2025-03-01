@@ -74,7 +74,7 @@ class Solution {
     public int mostBooked(int n, int[][] meetings) {
         Arrays.sort(meetings, (o1, o2) -> {if ( o1[0] < o2[0]) return -1; else if ( o1[0] > o2[0] ) return 1; else return 0;});
         int[] bookingCount = new int[n];
-        int[] roomStatus = new int[n];
+        long[] roomStatus = new long[n];
         for ( int i = 0; i < n; i++ ) {
             roomStatus[i] = 0; //if -1 then it means room is available
         }
@@ -85,7 +85,7 @@ class Solution {
             int thisMeetingDuration = meetings[meetingCount][1] - thisMeetingStart;
             
             int nextAvailable = this.firstAvailable(roomStatus, thisMeetingStart);
-            int thisMeetingEnd = Math.max(roomStatus[nextAvailable], thisMeetingStart) + thisMeetingDuration;//start time based on room available and duration
+            long thisMeetingEnd = Math.max(roomStatus[nextAvailable], (long)thisMeetingStart) + thisMeetingDuration;//start time based on room available and duration
             //set the end time for the next available to be the end time for this meeting
             roomStatus[nextAvailable] = thisMeetingEnd;
             //update count to indicate that this room was used
@@ -111,7 +111,7 @@ class Solution {
         return maxBookedIndex;
     }
 
-    private int firstAvailable(int[] rooms, int currentTime) {
+    private int firstAvailable(long[] rooms, int currentTime) {
         int first = 0;
         for ( int i = 0; i < rooms.length; i++ ) {
             //what is the current time
@@ -142,7 +142,32 @@ class Solution {
         // int[][] meetings3 = {{18,19},{3,12},{17,19},{2,13},{7,10}};
         // System.out.println(solution.mostBooked(4, meetings3)); // Output: 0
 
-        int[][] meetings4 = {{0,10},{1,9},{2,8},{3,7},{4,6}};
+        // int[][] meetings4 = {{0,10},{1,9},{2,8},{3,7},{4,6}};
+        // System.out.println(solution.mostBooked(3, meetings4)); // Output: 1
+
+        // int[][] meetings4 = new int[80011][2];
+        // for ( int i = 0; i < 80011; i++ ) {
+        //     if ( i < 80000 ) {
+        //         meetings4[i] = new int[]{i+1, 300000 + i + 1};
+        //     }
+        //     else if ( i == 80000) {
+        //         meetings4[i] = new int[]{i+1, 300000};
+        //     }
+        //     else {
+        //         meetings4[i] = new int[]{i+1, i+2};
+        //     }
+        int[][] meetings4 = new int[21][2];
+        for ( int i = 0; i < 21; i++ ) {
+            if ( i < 11 ) {
+                meetings4[i] = new int[]{i+1, 300000 + i + 1};
+            }
+            else if ( i == 11) {
+                meetings4[i] = new int[]{i+1, 300000};
+            }
+            else {
+                meetings4[i] = new int[]{i+1, i+2};
+            }
+        }
         System.out.println(solution.mostBooked(3, meetings4)); // Output: 1
     }
 }
