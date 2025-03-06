@@ -50,9 +50,11 @@ public class Solution {
         int[][] arr = {
             {1,2,3},
             {4,5,6}
+            // ,
+            // {7,8,9}
         };
         Solution s = new Solution();
-        int[][] result = s.transpose(arr);
+        int[][] result = s.anticlockwise90(arr);
         s.printArray(result);
      }
 
@@ -63,6 +65,59 @@ public class Solution {
             }
             System.out.println();
          }
+     }
+
+     public int[][] inPlaceTranspose(int[][] matrix) {
+        //in place transpose
+        int rows = matrix.length;
+        int cols = matrix[0].length;
+        for ( int i = 0; i < rows; i++ ) {
+            for ( int j = i; j < cols; j++ ) {
+                //if i == j then we are on diagonal which we can skip
+                if ( i != j ) {
+                    int temp = matrix[i][j];
+                    matrix[i][j] = matrix[j][i];
+                    matrix[j][i] = temp;
+                } 
+            }
+        }
+        return matrix;
+     }
+
+     public int[][] transposeAgain(int[][] matrix) {
+        int inputRows = matrix.length;
+        int inputCols = matrix[0].length;
+        int[][] result = new int[inputCols][inputRows];
+        for ( int i = 0; i < inputRows; i++ ) {
+            for ( int j = 0; j < inputCols; j++) {
+                result[j][i] = matrix[i][j];
+            }
+        }
+        return result;
+     }
+
+     public int[][] clockwise90(int[][] matrix) {
+        int inputRows = matrix.length;
+        int inputCols = matrix[0].length;
+        int[][] result = new int[inputCols][inputRows];
+        for ( int i = inputRows-1; i >= 0; i-- ) {
+            for ( int j = 0; j < inputCols; j++) {
+                result[j][(inputRows-1)-i] = matrix[i][j];
+            }
+        }
+        return result;
+     }
+
+     public int[][] anticlockwise90(int[][] matrix) {
+        int inputRows = matrix.length;
+        int inputCols = matrix[0].length;
+        int[][] result = new int[inputCols][inputRows];
+        for ( int i = 0; i < inputRows; i++ ) {
+            for ( int j = inputCols - 1; j >= 0; j-- ) {
+                result[(inputCols-1)-j][i] = matrix[i][j];
+            }
+        }
+        return result;
      }
 
 }
