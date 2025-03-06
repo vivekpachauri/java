@@ -116,7 +116,6 @@ public class Solution {
     }
 
     private boolean isOneAway(String begin, String end) {
-        //TODO implement this
         //we can do this fast using two pointers
         int matchCount = 0;
         char[] beginArray = begin.toCharArray();
