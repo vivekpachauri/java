@@ -47,10 +47,12 @@ public class Solution {
     public List<List<Integer>> kSmallestPairs(int[] nums1, int[] nums2, int k) {
         List<List<Integer>> result = new ArrayList<List<Integer>>();
         PriorityQueue<QueueEntry> queue = new PriorityQueue<>();
-        for ( int i = 0; i < nums1.length; i++ ) {
-            for ( int j = 0; j < nums2.length; j++ ) {
+        int totalInitialized = 0;
+        for ( int i = 0; i < k && totalInitialized < k; i++ ) {
+            for ( int j = 0; j < nums2.length && totalInitialized < k; j++ ) {
                 QueueEntry entry = new QueueEntry(nums1[i] + nums2[j], nums1[i], nums2[j]);
                 queue.add(entry);
+                totalInitialized++;
             }
         }
         for ( int i = 0; i < k; i++ ) {
@@ -150,9 +152,9 @@ public class Solution {
 
     public static void main(String[] args) {
         Solution s = new Solution();
-        int[] nums1 = new int[] { 4,3,2,1 };
-        int[] nums2 = new int[] { 8,7,6,5 };
-        for (List<Integer> pair : s.kSmallestPairs(nums1, nums2, 10)) {
+        int[] nums1 = new int[] { 1,1,2 };
+        int[] nums2 = new int[] { 1,2,3 };
+        for (List<Integer> pair : s.kSmallestPairs(nums1, nums2, 2)) {
             pair.stream().forEach(e -> System.out.print(e + " "));
             System.out.println();
         }
