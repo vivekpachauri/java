@@ -57,18 +57,12 @@ public class Solution {
      */
 
      public int missingNumber(int[] nums) {
-        boolean swapped = false;
+        
         int retVal = nums.length;
-        for ( int i = 0; i < nums.length; i++ ) {
-            if ( nums[i] == nums.length) {
-                nums[i]--;
-                swapped = true;
-            }
-        }
         int index = 0;
         while ( index < nums.length ) {
             int correctLocation = (nums[index] < nums.length) ? nums[index] : (nums[index] - 1);
-            if ( nums[index] != nums[correctLocation] ) {
+            if ( (nums[index] < nums.length) && nums[index] != nums[correctLocation] ) {
                 int temp = nums[index];
                 nums[index] = nums[correctLocation];
                 nums[correctLocation] = temp;
@@ -76,9 +70,6 @@ public class Solution {
             else {
                 index++;
             }
-        }
-        if ( swapped ) {
-            nums[nums.length-1]++;
         }
         //printArr(nums);
         for ( int i = 0; i < nums.length; i++ ) {
