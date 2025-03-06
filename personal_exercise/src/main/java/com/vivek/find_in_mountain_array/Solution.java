@@ -1,8 +1,8 @@
 package com.vivek.find_in_mountain_array;
 
 public class Solution {
-    public int findInMountainArray(int target, MountainArray mountainArr) {
-        int start = 0, end = mountainArr.getLength() - 1, mid;
+    public int findInMountainArrayIncorrect(int target, MountainArray mountainArr) {
+        int start = 0, end = mountainArr.length() - 1, mid;
         // do {
         //     mid = start + ((end - start) / 2);
         //     //check if in ascending or descending part
@@ -10,12 +10,12 @@ public class Solution {
         // } while ((end - start) >= 2);
         while ( start < end ) {
             mid = start + ((end - start) / 2);
-            int midValue = mountainArr.getValue(mid);
+            int midValue = mountainArr.get(mid);
             if ( midValue == target) {
                 return mid;
             }
             //check if in ascending or descending part
-            else if ( midValue < mountainArr.getValue(mid+1) ) {
+            else if ( midValue < mountainArr.get(mid+1) ) {
                 //in the ascending part
                 //if the target is smaller than mid then look to the left
                 if ( midValue > target ) {
@@ -40,6 +40,79 @@ public class Solution {
         }
         return -1;
     }
+
+    public int findInMountainArray(int target, MountainArray mountainArr) {
+        int start = 0, end = mountainArr.length() - 1;
+        int peak = findPeak(mountainArr, start, end, target);
+        // System.out.println("peak index " + peak);
+        int result = -1;
+        result = searchAsc(mountainArr, 0, peak, target);
+        if ( result == -1 ) {
+            // System.out.println("not found in ascending part");
+            result = searchDesc(mountainArr, peak + 1, end, target);
+        }
+        return result;
+    }
+
+    private int findPeak(MountainArray mtn, int start, int end, int target) {
+        // int peak = 0;
+        int peakIndex = 0;
+        while (start <= end ) {
+            int mid = ((end - start) / 2 ) + start;
+            int midValue = mtn.get(mid);
+            if ( midValue > mtn.get(mid+1) ) {
+                // peak = midValue;
+                peakIndex = mid;
+                end = mid - 1;
+            }
+            else {
+                start = mid + 1;
+            }
+        }
+        return peakIndex;
+    }
+
+    private int searchAsc(MountainArray mtn, int start, int end, int target) {
+        int result = -1;
+        while ( start <= end ) {
+            int mid = start + ((end - start) / 2);
+            int midValue = mtn.get(mid);
+            if ( midValue == target ) {
+                return mid;
+            }
+            else if ( midValue < target ) {
+                //look to the right
+                start = mid + 1;
+            }
+            else {
+                //look to the left
+                end = mid - 1;
+            }
+        }
+        return result;
+    }
+
+    private int searchDesc(MountainArray mtn, int start, int end, int target) {
+        int result = -1;
+        while ( start <= end ) {
+            int mid = start + ((end - start) / 2);
+            int midValue = mtn.get(mid);
+            if ( midValue == target ) {
+                return mid;
+            }
+            else if ( midValue < target ) {
+                //look to the left
+                end = mid - 1;
+            }
+            else {
+                //look to the right
+                start = mid + 1;
+            }
+        }
+        return result;
+    }
+
+
 
 
     public static void main(String[] args) {
@@ -66,8 +139,8 @@ public class Solution {
 
 
 abstract interface MountainArray {
-    public int getLength();
-    public int getValue(int index);
+    public int length();
+    public int get(int index);
 }
 
 class MountainImpl implements MountainArray {
@@ -78,12 +151,12 @@ class MountainImpl implements MountainArray {
     }
 
     @Override
-    public int getLength() {
+    public int length() {
         return array.length;
     }
 
     @Override
-    public int getValue(int index) {
+    public int get(int index) {
         return array[index];
     }
 }
