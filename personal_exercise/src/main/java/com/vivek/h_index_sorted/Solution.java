@@ -53,51 +53,41 @@ class Solution {
          * the size of the array
          */
         // return hIndexRec(citations, 0, citations.length-1, false, 0,0);
-        return hIndexIter(citations);
+        // return hIndexBinarySearch(citations);
+        return hIndexRec(citations, 0, citations.length - 1);
 
     }
 
-    private int hIndexRec(int[] citations, int beginning, int end, boolean wasPreviousValid, int previousMid, int adder) {
-        int retVal;
+    private int hIndexRec(int[] citations, int beginning, int end) {
+        //base case
+        //if beginning == end
+        //if the value at the beginning index is greter or equal to the subarray length then return
+        //the value else return 0
+//        int retVal;
         if (beginning == end) {
-            retVal = citations[beginning] > 0 ? 1 : 0;
-            return retVal;
-        }
-        int mid = ((end - beginning) / 2) + beginning;
-        //mid = (mid == beginning) ? mid + 1 : mid;
-        int diff = citations[mid] - (mid + 1);
-        // example 1 [1,2,3,4,5] 3 - [3]
-        // example 2 [1,2,2,4,5] 2 - [3]
-        // example 3 [1,2,4,4,5] 4 - [3]
-        // example 4 [1,4,4,4,5] 4 - [3]
-
-        // if the value is zero this is the best case scenario, we cannot find a
-        // sub-array bigger than
-        // this, return this size
-
-        // if the value is positive then maybe we can find a bigger sub-array so try it
-        // on the left size of this
-        // mid point
-
-        // if the value is negative then perhaps a smaller sub-array is possible so try
-        // it on the right side, unless we previously found a valid value
-        // of this mid point
-        if ( diff == 0 ) {
-            return mid + 1 + adder; 
-        }
-        else if (diff > 0) {
-            return hIndexRec(citations, beginning, mid, true, mid + 1 + adder, mid);
-        }
-        // diff less than 0
-        else {
-            if ( wasPreviousValid ) {
-                return previousMid;
+            int subArrayLength = citations.length - beginning;
+            //retVal = citations[beginning] > 0 ? 1 : 0;
+            //if the value at beginning index is equal or greater to subarray length then return the value
+            //else return 0
+            if ( citations[beginning] >= subArrayLength ) {
+                return subArrayLength;
             }
             else {
-                return hIndexRec(citations, mid, end, false, mid, -mid);
+                return 0;
             }
         }
-        // return mid + 1;
+        int mid = ((end - beginning) / 2) + beginning;
+        //if the value at mid index is a valid candidate then return the max between this and
+        //rec call on the left subarray
+        int subArrayLength = citations.length - mid;
+        if ( citations[mid] >= subArrayLength ) {
+            return Math.max(subArrayLength, hIndexRec(citations, beginning, mid));
+        }
+        //else return the value of the rec call on the right subarray
+        else {
+            return hIndexRec(citations, mid + 1, end);
+        }
+
     }
 
     private int hIndexIter(int[] citations) {
@@ -161,6 +151,29 @@ class Solution {
         return validSizeFound;
     }
 
+    private int hIndexBinarySearch(int[] citations) {
+        //citations are sorted so perform binary search on them till you find find index where
+        //citations[index] >= length(index...n-1)
+        int result = 0;
+
+        int start = 0, end = citations.length-1;
+        while ( start <= end ) {
+            int mid = start + ((end - start) / 2);
+            //if the value in the current mid is >= size then this could be a potential solution
+            int sizeFromMidToEnd = (citations.length - mid);
+            if ( citations[mid] >= sizeFromMidToEnd ) {
+                result = sizeFromMidToEnd;
+                //also check the left sub-array
+                end = mid - 1;
+            }
+            else {
+                //check the right subarray
+                start = mid + 1;
+            }
+        }
+        return result;
+    }
+
     public static void main(String[] args) {
         Solution solution = new Solution();
         
@@ -177,7 +190,7 @@ class Solution {
         System.out.println("Test case 4: " + solution.hIndex(citations4)); // Output: 4
         
         int[] citations5 = {2, 2};
-        System.out.println("Test case 5: " + solution.hIndex(citations5)); // Output: 0
+        System.out.println("Test case 5: " + solution.hIndex(citations5)); // Output: 2
 
         int[] citations6 = {4,4,4,4};
         System.out.println("Test case 6: " + solution.hIndex(citations6)); // Output: 4
