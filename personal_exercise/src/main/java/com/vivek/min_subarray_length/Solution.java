@@ -35,7 +35,7 @@ public class Solution {
      * solution of which the time complexity is O(n log(n))
      */
 
-     public int minSubArrayLen(int target, int[] nums) {
+    public int minSubArrayLen(int target, int[] nums) {
         int beginning = 0, end = 0, length = 0, windowSum = 0, windowSize = 0, minWindowSize = -1;
         
         for ( int i = 0; i < nums.length; i++ ) {
@@ -51,40 +51,45 @@ public class Solution {
                 //window already extended as part of the default loop work, nothing to do here
                 System.out.println(String.format("normal window increase to include value %d at index %d with current window size %d and window sum %d", nums[i], i, windowSize, windowSum));
             }
-            else if ( windowSum == target ) {
-                System.out.println(String.format("found target at index %d with start %d and end %d", i, beginning, end));
-                //if window sum matches target then store the current window size if it is useful
-                if ( minWindowSize == -1 || (windowSize < minWindowSize) ) {
-                    minWindowSize = windowSize;
-                }
-            }
+            // else if ( windowSum == target ) {
+            //     System.out.println(String.format("found target at index %d with start %d and end %d", i, beginning, end));
+            //     //if window sum matches target then store the current window size if it is useful
+            //     if ( minWindowSize == -1 || (windowSize < minWindowSize) ) {
+            //         minWindowSize = windowSize;
+            //     }
+            // }
             else {
                 System.out.println(String.format("window sum too big at index %d beginning %d end %d and value %d", i, beginning, end, windowSum));
                 //if the current window sum is greater than target then shrink the window until the window sum is less than target
                 //while the window sum is greater than target, shift the window start to the right and reduce the window sum
-                while ( windowSum > target ) {
+                while ( windowSum >= target ) {
+                                        
+                    if ( minWindowSize == -1 || (windowSize < minWindowSize) ) {
+                        minWindowSize = windowSize;
+                    }
                     System.out.println(String.format("reducring value %d from window sum for beginning index %d", nums[beginning], beginning));
                     windowSum -= nums[beginning];
                     beginning++;
                     windowSize--;
                 }
-                if ( windowSum == target ) {
-                    System.out.println("found correct target during shrinking");
-                    if ( minWindowSize == -1 || (windowSize < minWindowSize) ) {
-                        minWindowSize = windowSize;
-                    }
-                }
+                // if ( windowSum == target ) {
+                //     System.out.println("found correct target during shrinking");
+                //     if ( minWindowSize == -1 || (windowSize < minWindowSize) ) {
+                //         minWindowSize = windowSize;
+                //     }
+                // }
                 System.out.println(String.format("after shrinking at index %d sum is %d with window beginning %d and ending %d and size %d", i, windowSum, beginning, end, windowSize));
             }
         }
         return (minWindowSize == -1) ? 0 : minWindowSize;
-     }
+    }
 
 
      public static void main(String[] args ) {
         Solution s = new Solution();
-        int[] arr = new int[]{1,2,3,4,5};
-        System.out.println(s.minSubArrayLen(11, arr));
+        // int[] arr = new int[]{1,2,3,4,5};
+        int[] arr = new int[]{2,3,1,2,4,3};
+        System.out.println(s.minSubArrayLen(7, arr));
 
      }
 }
