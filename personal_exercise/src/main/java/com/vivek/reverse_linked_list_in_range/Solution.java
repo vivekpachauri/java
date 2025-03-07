@@ -28,7 +28,7 @@ public class Solution {
      * -500 <= Node.val <= 500
      * 1 <= left <= right <= n
      */
-    public ListNode reverseBetween(ListNode head, int left, int right) {
+    public ListNode reverseBetweenWorking(ListNode head, int left, int right) {
         /*
          * node 1 -> node 2 -> node 3
          * prev curr
@@ -81,9 +81,40 @@ public class Solution {
         return head;
     }
 
-    private ListNode reverse(ListNode head, int num) {
+    private ListNode reversePrev(ListNode head, int num) {
         ListNode prev = head, curr = head.next;
         for ( int i = 0; i < num; i++ ) {
+            ListNode temp = curr.next;
+            curr.next = prev;
+            prev = curr;
+            curr = temp;
+        }
+        head.next = curr;
+        return prev;
+    }
+
+    public ListNode reverseBetween(ListNode head, int left, int right) {
+        ListNode prev = head, curr = head;
+        int index = 1;
+        while (index < left ) {
+            prev = curr;
+            curr = curr.next;
+            index++;
+        }
+        if ( left == 1 ) {
+            head = reverse(curr, right-left);
+        }
+        else {
+            
+            prev.next = reverse(curr, right-left);
+        }
+        return head;
+        //prev pointing to the node which need to be set to the new head
+    }
+
+    public ListNode reverse(ListNode head, int count) {
+        ListNode prev = head, curr = head.next;
+        for ( int i = 0; i <= count; i++ ) {
             ListNode temp = curr.next;
             curr.next = prev;
             prev = curr;
@@ -108,7 +139,7 @@ public class Solution {
         System.out.println();
 
         Solution s = new Solution();
-        ListNode reversedHead = s.reverseBetween(node1, 1, 4);
+        ListNode reversedHead = s.reverseBetween(node1, 1, 2);
 
         while (reversedHead != null) {
             System.out.print(reversedHead.val + " ");
